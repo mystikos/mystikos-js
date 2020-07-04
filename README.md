@@ -1,5 +1,8 @@
 # mystikos-js
 
+Visit [CONTRIBUTING.md](CONTRIBUTING.md) to view the style guide links as well 
+as the code of conduct.
+
 ## Project setup
 ```
 npm install
