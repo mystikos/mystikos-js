@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <TheNavbar/>
-    <router-view class="pt-20" v-cloak/>
+    <router-view class="pt-24" v-cloak/>
   </div>
 </template>
 

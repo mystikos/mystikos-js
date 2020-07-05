@@ -61,7 +61,5 @@ export default {
 </script>
 
 <style scoped>
-.simple-fade {
-  @apply transition duration-200 ease-in-out;
-}
+
 </style>
