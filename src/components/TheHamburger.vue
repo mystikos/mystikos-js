@@ -1,7 +1,7 @@
 <template>
   <button
     class="block md:hidden border-none focus:outline-none"
-    @click="$emit('toggle-e  xpand')"
+    @click="$emit('toggle-expand')"
   >
     <span
       class="burger burger-first"
