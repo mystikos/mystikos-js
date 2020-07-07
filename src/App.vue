@@ -1,14 +1,17 @@
 <template>
   <div id="app">
     <TheNavbar/>
-    <router-view class="pt-24" v-cloak/>
+    <transition name="fade" mode="out-in">
+      <router-view class="pt-24" v-cloak/>
+    </transition>
+    <TheFooter class="mt-20"/>
   </div>
 </template>
 
 <style lang="scss">
 #app {
   /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
-  @apply h-screen;
+  @apply h-full;
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -30,11 +33,19 @@ h1, h2, h3, h4, h5, h6, header {
 #nav a .router-link-exact-active {
   color: #42b983;
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 250ms;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>
 <script>
 import TheNavbar from './components/TheNavbar.vue';
+import TheFooter from './components/TheFooter.vue';
 
 export default {
-  components: { TheNavbar },
+  components: { TheNavbar, TheFooter },
 };
 </script>

@@ -12,13 +12,13 @@
     </p>
     <p class="pt-5">
       This is the
-<!--   TODO: Add GitHub repo when it becomes public.   -->
-      <a href="https://vuejs.org/">Vue.js</a> based branch of the Mystikos project.
+      <a href="https://vuejs.org/">Vue.js</a> based version of the
+      <a href="https://github.com/mystikos/mystikos-js">Mystikos</a> project.
     </p>
     <router-link
       to="/about"
       class="mt-10 inline-block text-gray-200 btn-dust-purple hover:text-white uppercase btn
-             simple-fade transform hover:-translate-y-1 hover:scale-110 hover:shadow-lg"
+             simple-fade transform hover:scale-110 hover:shadow-lg"
     >Get Started</router-link>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// Use CSS variables for the repeated colors
+// TODO: Use CSS variables for the repeated colors
 .text-dust-purple {
   color: #A7ADC6;
 }

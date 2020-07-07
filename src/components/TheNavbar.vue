@@ -1,6 +1,6 @@
 <template>
   <div id="nav" class="fixed w-full">
-    <nav class="flex flex-wrap items-center justify-between p-4 bg-gray-300 bg-opacity-75">
+    <nav class="flex flex-wrap items-center justify-between p-4 bg-gray-300 bg-opacity-90">
       <div class="flex items-center flex-shrink-0 mr-6 text-white">
         <router-link
           to="/"
@@ -61,5 +61,7 @@ export default {
 </script>
 
 <style scoped>
-
+.bg-opacity-90 {
+  --bg-opacity: 0.9;
+}
 </style>
