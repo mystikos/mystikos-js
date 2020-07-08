@@ -4,11 +4,13 @@
     <transition name="fade" mode="out-in">
       <router-view class="pt-24" v-cloak/>
     </transition>
-    <TheFooter class="mt-20"/>
+    <TheFooter class="mt-16"/>
   </div>
 </template>
 
 <style lang="scss">
+@import './assets/styles/dropzone.css';
+
 #app {
   /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
   @apply h-full;
@@ -41,6 +43,7 @@ h1, h2, h3, h4, h5, h6, header {
   opacity: 0;
 }
 </style>
+
 <script>
 import TheNavbar from './components/TheNavbar.vue';
 import TheFooter from './components/TheFooter.vue';
