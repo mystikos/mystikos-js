@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.simple-fade {
+    @apply transition duration-200 ease-in-out;
+}
+
+a {
+    @apply text-purple-500;
+}
+
+a:hover {
+    @apply text-purple-700 simple-fade;
+}
