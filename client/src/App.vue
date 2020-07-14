@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TheNavbar/>
+    <TheNavbar class="z-2000"/>
     <transition name="fade" mode="out-in">
       <router-view class="pt-24" v-cloak/>
     </transition>
@@ -39,8 +39,13 @@ h1, h2, h3, h4, h5, h6, header {
 .fade-enter-active, .fade-leave-active {
   transition: opacity 250ms;
 }
+
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.z-2000 {
+  z-index: 2000;
 }
 </style>
 

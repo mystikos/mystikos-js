@@ -1,32 +1,20 @@
-# mystikos-js
+# Mystikos JS
 
-Visit [CONTRIBUTING.md](CONTRIBUTING.md) to view the style guide links as well 
+Mystikos is a privacy focused tool that enables users to easily conceal and
+secure their data within image(s) so that their data may be distributed without
+anyone knowing.
+
+## Style and Code of Conduct
+
+Visit [CONTRIBUTING.md](../CONTRIBUTING.md) to view the style guide links as well
 as the code of conduct.
 
-## Project setup
-```
-npm install
-```
+## Client
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+The frontend is created with [Vue.js](https://vuejs.org/). It can be found in
+[client directory](/client).
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Server
 
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The backend is created using [Express.js](https://expressjs.com/). It is located
+in the [server directory](/server).

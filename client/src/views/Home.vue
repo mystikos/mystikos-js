@@ -26,6 +26,17 @@
 <script>
 export default {
   name: 'Home',
+  data() {
+    return {
+      api: '',
+    };
+  },
+  mounted() {
+    fetch('http://localhost:3000/testAPI')
+      .then((res) => res.text())
+      .then((res) => { this.api = res; })
+      .catch((err) => err);
+  },
 };
 </script>
 

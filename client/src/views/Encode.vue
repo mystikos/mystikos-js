@@ -101,12 +101,27 @@
 <script>
 import * as Dropzone from 'dropzone';
 
+const axios = require('axios');
+
 export default {
   name: 'Encode.vue',
   data() {
     return {
       fileMessage: false,
     };
+  },
+  methods: {
+    testSubmit() {
+      axios.post('http://localhost:3000/testAPI', {
+        Name: 'Fred',
+        Age: '23',
+      })
+        .then((response) => {
+          console.log(response);
+        }).catch((error) => {
+          console.log(error);
+        });
+    },
   },
   mounted() {
     Dropzone.options.carrierImage = {
