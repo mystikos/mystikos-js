@@ -15,6 +15,7 @@ router.post('/', (req, res, next) => {
       next(err);
       return;
     }
+    console.log(fields, files);
     res.json({ fields, files });
   });
 });

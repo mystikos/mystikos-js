@@ -10,7 +10,7 @@
       <p>
         Upload carrier image(s) for data to be hidden in
       </p>
-      <form action="/" class="dropzone w-5/6 m-auto mt-5" id="carrier-image">
+      <form action="/" class="dropzone w-5/6 m-auto mt-5 simple-fade" id="carrier-image">
         <div class="dz-message needsclick">
           Upload carrier image(s) for data to be hidden in
         </div>
@@ -44,12 +44,12 @@
           File
         </button>
       </div>
-      <form v-if="fileMessage" action="/" class="dropzone w-5/6 m-auto mt-5" id="message-file">
+      <form v-show="fileMessage" action="/" class="dropzone w-5/6 m-auto mt-5" id="message-file">
         <div class="dz-message needsclick">
           Upload file to hide in carrier image
         </div>
       </form>
-      <div v-if="!fileMessage" class="mt-4">
+      <div v-show="!fileMessage" class="mt-4">
         <label for="text-message" class="hidden">Text</label>
         <input
           id="text-message"
@@ -57,6 +57,7 @@
           placeholder="Message..."
           class="w-4/5 rounded text-center focus:outline-none focus:shadow hover:shadow py-1
                  simple-fade"
+          v-model="message"
         />
       </div>
     </div>
@@ -77,6 +78,7 @@
           placeholder="Passphrase..."
           class="w-4/5 rounded text-center focus:outline-none focus:shadow hover:shadow py-1
                  simple-fade"
+          v-model="passphrase"
         />
       </div>
     </div>
@@ -91,6 +93,7 @@
       <button
         class="focus:outline-none py-2 px-4 rounded btn-dust-purple hover:shadow-lg simple-fade
                text-white mt-5"
+        id="btn_upload"
       >
         GENERATE
       </button>
@@ -108,6 +111,10 @@ export default {
   data() {
     return {
       fileMessage: false,
+      passphrase: '',
+      message: '',
+      carrierImage: null,
+      messageFile: null,
     };
   },
   methods: {
@@ -124,30 +131,58 @@ export default {
     },
   },
   mounted() {
-    Dropzone.options.carrierImage = {
+    const vm = this;
+    Dropzone.autoDiscover = false;
+    // eslint-disable-next-line no-unused-vars
+    this.carrierImage = new Dropzone('#carrier-image', {
+      url: 'http://localhost:3000/testAPI',
       // upload multiple files
       uploadMultiple: true,
       // 1 mb is here the max file upload size constraint
       maxFilesize: 1,
       acceptedFiles: '.jpeg,.jpg,.png,.gif',
       autoProcessQueue: false,
+      paramName: 'carrierImages',
 
       init() {
-        // const myDropzone = this;
+        document.getElementById('btn_upload').addEventListener('click', () => {
+          this.processQueue(); // Tell Dropzone to process all queued files.
+        });
 
-        // document.getElementById('btn_upload').addEventListener('click', () => {
-        //   myDropzone.processQueue(); // Tell Dropzone to process all queued files.
-        // });
-        //
-        // // Event to send your custom data to your server
-        // myDropzone.on('sending', (file, xhr, data) => {
-        //   // First param is the variable name used server side
-        //   // Second param is the value, you can add what you what
-        //   // Here I added an input value
-        //   data.append('your_variable', document.getElementById('your_input').value);
-        // });
+        // Event to send your custom data to your server
+        this.on('sendingmultiple', (file, xhr, data) => {
+          data.append('passphrase', vm.passphrase);
+
+          const files = vm.messageFile.getQueuedFiles();
+
+          if (vm.fileMessage) {
+            for (let x = 0, fileLength = files.length; x < fileLength; x += 1) {
+              data.append(
+                'messageFile',
+                files[x],
+                files[x].name,
+              );
+            }
+            vm.messageFile.processQueue();
+          } else {
+            data.append('messageText', vm.message);
+          }
+        });
       },
-    };
+    });
+    // eslint-disable-next-line no-unused-vars
+    this.messageFile = new Dropzone('#message-file', {
+      url: 'http://localhost:3000/testAPI',
+      // upload multiple files
+      uploadMultiple: true,
+      // 1 mb is here the max file upload size constraint
+      maxFilesize: 1,
+      autoProcessQueue: false,
+      paramName: 'messageFiles',
+    });
+    // Dropzone.options.carrierImage = {
+    //
+    // };
   },
 };
 </script>
@@ -173,6 +208,10 @@ export default {
 
 .dz-message {
   @apply text-gray-600;
+}
+
+.dz-drag-hover {
+  /*background-color: red !important;*/
 }
 
 .dropzone {
