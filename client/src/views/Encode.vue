@@ -104,7 +104,7 @@
 <script>
 import * as Dropzone from 'dropzone';
 
-const axios = require('axios');
+// const axios = require('axios');
 const crypto = require('crypto');
 
 // const algorithm = 'aes-256-cbc';
@@ -123,27 +123,11 @@ export default {
     };
   },
   methods: {
-    testSubmit() {
-      axios.post('http://localhost:3000/testAPI', {
-        Name: 'Fred',
-        Age: '23',
-      })
-        .then((response) => {
-          console.log(response);
-        }).catch((error) => {
-          console.log(error);
-        });
-    },
-    something() {
-      this.encryptMessage().then((data) => {
-        console.log(data);
-      }).catch((err) => console.log(err));
-    },
     getBase64(file) {
       const reader = new FileReader();
       return new Promise((resolve) => {
         reader.onload = (ev) => {
-          resolve(ev.target.result);
+          resolve(new Uint8Array(ev.target.result));
         };
         reader.readAsArrayBuffer(file);
       });
@@ -155,7 +139,7 @@ export default {
       if (!this.fileMessage) {
         // Defining iv
         const iv = crypto.randomBytes(16);
-        this.iv = iv;
+        this.iv = iv.toString('hex');
 
         // Creating Cipheriv with its parameter
         const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
@@ -167,10 +151,7 @@ export default {
         encrypted = Buffer.concat([encrypted, cipher.final()]);
 
         // iv and encrypted data
-        return {
-          iv: iv.toString('hex'),
-          encryptedData: encrypted.toString('hex'),
-        };
+        return [encrypted.toString('hex')];
       }
       console.log(this.messageFile.getQueuedFiles());
 
@@ -224,24 +205,9 @@ export default {
           data.append('encryptedData',
             vm.encryptedData.length === 0 ? null : JSON.stringify(vm.encryptedData));
           data.append('iv', String(vm.iv));
-          // const files = vm.messageFile.getQueuedFiles();
-          //
-          // if (vm.fileMessage) {
-          //   for (let x = 0, fileLength = files.length; x < fileLength; x += 1) {
-          //     data.append(
-          //       'messageFile',
-          //       files[x],
-          //       files[x].name,
-          //     );
-          //   }
-          //   vm.messageFile.processQueue();
-          // } else {
-          //   data.append('messageText', vm.message);
-          // }
         });
       },
     });
-    // eslint-disable-next-line no-unused-vars
     this.messageFile = new Dropzone('#message-file', {
       url: 'http://localhost:3000/testAPI',
       // upload multiple files
@@ -251,9 +217,6 @@ export default {
       autoProcessQueue: false,
       paramName: 'messageFiles',
     });
-    // Dropzone.options.carrierImage = {
-    //
-    // };
   },
 };
 </script>
