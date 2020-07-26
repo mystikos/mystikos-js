@@ -34,6 +34,7 @@
           placeholder="Passphrase..."
           class="w-4/5 rounded text-center focus:outline-none focus:shadow hover:shadow py-1
                  simple-fade"
+          v-model="passphrase"
         />
       </div>
     </div>
@@ -58,8 +59,33 @@
 <script>
 import * as Dropzone from 'dropzone';
 
+const crypto = require('crypto');
+
 export default {
   name: 'Decode.vue',
+  data() {
+    return {
+      passphrase: '',
+    };
+  },
+  methods: {
+    decrypt(encryptedData, iv) {
+      const password = this.passphrase ? this.passphrase : '40176A2084CD236E206524B0E32B1270CA6403CF574DDCF65F18EDF8F40C74A0';
+      const key = crypto.createHash('sha256').update(String(password)).digest('base64').substr(0, 32);
+
+      const encryptedText = Buffer.from(encryptedData, 'hex');
+
+      // Creating Decipher
+      const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+
+      // Updating encrypted text
+      let decrypted = decipher.update(encryptedText);
+      decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+      // returns data after decryption
+      return decrypted.toString();
+    },
+  },
   mounted() {
     Dropzone.options.carrierImage = {
       // upload multiple files

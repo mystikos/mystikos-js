@@ -105,6 +105,9 @@
 import * as Dropzone from 'dropzone';
 
 const axios = require('axios');
+const crypto = require('crypto');
+
+// const algorithm = 'aes-256-cbc';
 
 export default {
   name: 'Encode.vue',
@@ -115,6 +118,8 @@ export default {
       message: '',
       carrierImage: null,
       messageFile: null,
+      encryptedData: [],
+      iv: '',
     };
   },
   methods: {
@@ -129,8 +134,66 @@ export default {
           console.log(error);
         });
     },
+    something() {
+      this.encryptMessage().then((data) => {
+        console.log(data);
+      }).catch((err) => console.log(err));
+    },
+    getBase64(file) {
+      const reader = new FileReader();
+      return new Promise((resolve) => {
+        reader.onload = (ev) => {
+          resolve(ev.target.result);
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    },
+    async encryptMessage() {
+      // Arbitrary default hash
+      const password = this.passphrase ? this.passphrase : '40176A2084CD236E206524B0E32B1270CA6403CF574DDCF65F18EDF8F40C74A0';
+      const key = crypto.createHash('sha256').update(String(password)).digest('base64').substr(0, 32);
+      if (!this.fileMessage) {
+        // Defining iv
+        const iv = crypto.randomBytes(16);
+        this.iv = iv;
+
+        // Creating Cipheriv with its parameter
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+
+        // Updating text
+        let encrypted = cipher.update(this.message);
+
+        // Using concatenation
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+        // iv and encrypted data
+        return {
+          iv: iv.toString('hex'),
+          encryptedData: encrypted.toString('hex'),
+        };
+      }
+      console.log(this.messageFile.getQueuedFiles());
+
+      // here will be array of promisified functions
+      const promises = [];
+
+      // loop through fileList with for loop
+      for (let i = 0; i < this.messageFile.getQueuedFiles().length; i += 1) {
+        promises.push(this.getBase64(this.messageFile.getQueuedFiles()[i]));
+      }
+
+      // array with base64 strings
+      // eslint-disable-next-line no-return-await
+      return Promise.all(promises);
+    },
   },
   mounted() {
+    this.passphrase = 'pass';
+    this.message = 'message';
+    this.encryptMessage().then((data) => {
+      console.log(data);
+    }).catch((err) => console.log(err));
+
     const vm = this;
     Dropzone.autoDiscover = false;
     // eslint-disable-next-line no-unused-vars
@@ -146,27 +209,35 @@ export default {
 
       init() {
         document.getElementById('btn_upload').addEventListener('click', () => {
-          this.processQueue(); // Tell Dropzone to process all queued files.
+          const dropzone = this;
+          vm.encryptMessage()
+            .then((data) => {
+              console.log(data);
+              vm.encryptedData = data;
+              dropzone.processQueue(); // Tell Dropzone to process all queued files.
+            })
+            .catch((err) => console.log(err));
         });
 
         // Event to send your custom data to your server
         this.on('sendingmultiple', (file, xhr, data) => {
-          data.append('passphrase', vm.passphrase);
-
-          const files = vm.messageFile.getQueuedFiles();
-
-          if (vm.fileMessage) {
-            for (let x = 0, fileLength = files.length; x < fileLength; x += 1) {
-              data.append(
-                'messageFile',
-                files[x],
-                files[x].name,
-              );
-            }
-            vm.messageFile.processQueue();
-          } else {
-            data.append('messageText', vm.message);
-          }
+          data.append('encryptedData',
+            vm.encryptedData.length === 0 ? null : JSON.stringify(vm.encryptedData));
+          data.append('iv', String(vm.iv));
+          // const files = vm.messageFile.getQueuedFiles();
+          //
+          // if (vm.fileMessage) {
+          //   for (let x = 0, fileLength = files.length; x < fileLength; x += 1) {
+          //     data.append(
+          //       'messageFile',
+          //       files[x],
+          //       files[x].name,
+          //     );
+          //   }
+          //   vm.messageFile.processQueue();
+          // } else {
+          //   data.append('messageText', vm.message);
+          // }
         });
       },
     });
