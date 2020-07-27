@@ -1,0 +1,45 @@
+const Jimp = require('jimp');
+
+async function carrierImages(carriers) {
+  const promises = [];
+  carriers.forEach((carrier) => {
+    promises.push(Jimp.read(carrier));
+  });
+  return Promise.all(promises);
+}
+
+async function payloadBinary() {
+  let stream = '';
+  for (let i = 0; i < encData.length; i += 1) {
+    stream += `${encData[i].charCodeAt(0).toString(2)}`;
+  }
+}
+
+module.exports = async (carriers, encData, iv) => {
+  let streamIdx = 0;
+
+  return Jimp.read(files['carrierImages[0]'].path)
+    .then((carrier) => {
+      carrier.scan(0, 0, carrier.bitmap.width, carrier.bitmap.height, function embed(x, y, idx) {
+        // console.log(streamIdx);
+        // eslint-disable-next-line no-plusplus,no-bitwise
+        const red = (this.bitmap.data[idx] & ~1) | +stream[streamIdx++];
+        // eslint-disable-next-line no-plusplus,no-bitwise
+        const green = (this.bitmap.data[idx + 1] & ~1) | +stream[streamIdx++];
+        // eslint-disable-next-line no-plusplus,no-bitwise
+        const blue = (this.bitmap.data[idx + 2] & ~1) | +stream[streamIdx++];
+        // eslint-disable-next-line no-plusplus,no-bitwise
+        const alpha = (this.bitmap.data[idx + 3] & ~1) | +stream[streamIdx++];
+
+        carrier.setPixelColor(Jimp.rgbaToInt(red, green, blue, alpha), x, y);
+        return carrier;
+      });
+    })
+    .then((carrier) => {
+      carrier.getBase64Async(Jimp.MIME_PNG)
+        .then((uri) => ({ uri }));
+    })
+    .catch((jimpError) => {
+      console.error(jimpError);
+    });
+};

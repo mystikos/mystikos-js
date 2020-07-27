@@ -98,6 +98,12 @@
         GENERATE
       </button>
     </div>
+    <img
+      :src="encoded"
+      v-if="encoded !== ''"
+      alt="Generated Image"
+      class="mt-5 rounded"
+    />
   </div>
 </template>
 
@@ -120,6 +126,7 @@ export default {
       messageFile: null,
       encryptedData: [],
       iv: '',
+      encoded: '',
     };
   },
   methods: {
@@ -206,6 +213,10 @@ export default {
             vm.encryptedData.length === 0 ? null : JSON.stringify(vm.encryptedData));
           data.append('iv', String(vm.iv));
         });
+      },
+      success(file, response) {
+        console.log(file, response);
+        vm.encoded = response.uri;
       },
     });
     this.messageFile = new Dropzone('#message-file', {

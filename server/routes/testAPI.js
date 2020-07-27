@@ -1,5 +1,6 @@
 const express = require('express');
 const formidable = require('formidable');
+const embedPayload = require('../helpers/EmbedPayload');
 
 const router = express.Router();
 
@@ -16,7 +17,12 @@ router.post('/', (req, res, next) => {
       return;
     }
     console.log(fields, files);
-    res.json({ fields, files });
+    const data = {
+      encData: JSON.parse(fields.encryptedData),
+      iv: fields.iv
+    };
+
+    res.json(embedPayload(files, data.encData, data.iv));
   });
 });
 
