@@ -22,7 +22,7 @@ router.post('/', (req, res, next) => {
       iv: fields.iv
     };
 
-    res.json(embedPayload(files, data.encData, data.iv));
+    embedPayload(files, data.encData, data.iv).then((result) => res.json({ uri: result }));
   });
 });
 

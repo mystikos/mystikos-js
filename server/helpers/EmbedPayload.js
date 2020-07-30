@@ -8,17 +8,19 @@ async function carrierImages(carriers) {
   return Promise.all(promises);
 }
 
-async function payloadBinary() {
+function payloadBinary(encData) {
   let stream = '';
   for (let i = 0; i < encData.length; i += 1) {
     stream += `${encData[i].charCodeAt(0).toString(2)}`;
   }
+  return stream;
 }
 
 module.exports = async (carriers, encData, iv) => {
+  const stream = payloadBinary(encData);
   let streamIdx = 0;
 
-  return Jimp.read(files['carrierImages[0]'].path)
+  return Jimp.read(carriers['carrierImages[0]'].path)
     .then((carrier) => {
       carrier.scan(0, 0, carrier.bitmap.width, carrier.bitmap.height, function embed(x, y, idx) {
         // console.log(streamIdx);
@@ -32,13 +34,10 @@ module.exports = async (carriers, encData, iv) => {
         const alpha = (this.bitmap.data[idx + 3] & ~1) | +stream[streamIdx++];
 
         carrier.setPixelColor(Jimp.rgbaToInt(red, green, blue, alpha), x, y);
-        return carrier;
       });
+      return carrier.getBase64Async(Jimp.MIME_PNG);
     })
-    .then((carrier) => {
-      carrier.getBase64Async(Jimp.MIME_PNG)
-        .then((uri) => ({ uri }));
-    })
+    .then((uri) => uri)
     .catch((jimpError) => {
       console.error(jimpError);
     });
