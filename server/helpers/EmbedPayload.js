@@ -17,7 +17,7 @@ function payloadBinary(encData) {
 }
 
 module.exports = async (carriers, encData, iv) => {
-  const stream = payloadBinary(encData);
+  const stream = payloadBinary(encData[0]);
   let streamIdx = 0;
   const finalPhoto = 'picture.png';
 
@@ -36,10 +36,9 @@ module.exports = async (carriers, encData, iv) => {
 
         carrier.setPixelColor(Jimp.rgbaToInt(red, green, blue, alpha), x, y);
       });
-      // return carrier.getBase64Async(Jimp.MIME_PNG);
-      carrier.writeAsync(finalPhoto);
+      return carrier.getBase64Async(Jimp.MIME_PNG);
     })
-    .then(() => finalPhoto)
+    .then((result) => result)
     .catch((jimpError) => {
       console.error(jimpError);
     });

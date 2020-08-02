@@ -207,10 +207,10 @@ export default {
           data.append('iv', String(vm.iv));
         });
       },
-      success(file) {
+      success(file, response) {
         const link = document.createElement('a');
-        link.download = file.name;
-        link.href = file.dataURL;
+        link.download = 'picture.png';
+        link.href = response.uri;
         link.click();
       },
     });
