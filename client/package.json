@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "autoprefixer": "^9.8.4",
+<<<<<<< HEAD:client/package.json
     "axios": "^0.19.2",
+=======
+>>>>>>> develop:package.json
     "core-js": "^3.6.5",
     "dropzone": "^5.7.1",
     "tailwindcss": "^1.4.6",
